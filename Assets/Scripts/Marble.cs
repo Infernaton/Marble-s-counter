@@ -37,4 +37,15 @@ public class Marble : MonoBehaviour, IPointerClickHandler
     {
         Trims = new();
     }
+
+    public void PickUp()
+    {
+        //Make sound
+        Destroy(gameObject);
+    }
+
+    public void Wrong()
+    {
+        //Make sound
+    }
 }
