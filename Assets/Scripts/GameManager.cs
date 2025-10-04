@@ -17,7 +17,10 @@ public class GameManager : MonoBehaviour
     private void GenerateMarble(Vector2 pos)
     {
         Marble marble = Instantiate(m_MarblePrefab, pos, Quaternion.identity, m_Board.transform);
-        marble.SetBaseImage(m_MarbleBases[Random.Range(0, m_MarbleTrims.Length)]);
+        int index = Random.Range(0, m_MarbleBases.Length-1);
+        print(index);
+        print(m_MarbleBases.Length);
+        marble.SetBaseImage(m_MarbleBases[index]);
 
         marble.SetTrims(Utils.Random.Shuffle(m_MarbleTrims));
     }
