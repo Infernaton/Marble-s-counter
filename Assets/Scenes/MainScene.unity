@@ -537,6 +537,7 @@ GameObject:
   m_Component:
   - component: {fileID: 962709069}
   - component: {fileID: 962709068}
+  - component: {fileID: 962709070}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -560,14 +561,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ef6b3dad480f2fb429ca8bc53809c0a3, type: 3}
   - {fileID: 21300000, guid: 549639e001d427840849bd45e3a48021, type: 3}
   - {fileID: 21300000, guid: 9f55863a8f4119c47bc08e17cab3535b, type: 3}
+  - {fileID: 21300000, guid: 79c137307a64ea0498a067c21395ed96, type: 3}
   m_MarbleBases:
   - {fileID: 21300000, guid: 4fa0473750e9ed240bc1f2600e976db7, type: 3}
   - {fileID: 21300000, guid: af21107401430a04cb021e78c21a4cd5, type: 3}
   m_MarblePrefab: {fileID: 7702358179033165718, guid: 7745c2c4d5b3fa04a9e99e035dc8c74f, type: 3}
+  m_ChanceResetRefMarble: 0.2
   m_Board: {fileID: 539865620}
   m_GoalFrame: {fileID: 1571117533}
   m_Score: {fileID: 1409298113}
-  m_Timer: {fileID: 1984494873}
 --- !u!4 &962709069
 Transform:
   m_ObjectHideFlags: 0
@@ -583,6 +585,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &962709070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962709067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6d55c1dd7756e4cbd3bd2ff6e0ab0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InitTimer: 10
+  m_TimerMini: 3
+  m_TextTimer: {fileID: 1984494873}
+  m_TimeResetCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_InvokeTimerOut:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 962709068}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: GameOver
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

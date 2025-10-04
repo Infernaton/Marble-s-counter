@@ -12,17 +12,19 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Marble m_MarblePrefab;
 
+    [SerializeField] private float m_ChanceResetRefMarble;
+
     [Header("UI")]
     [SerializeField] private Board m_Board;
     [SerializeField] private Canvas m_GoalFrame;
     [SerializeField] private TMP_Text m_Score;
-    [SerializeField] private TMP_Text m_Timer;
 
     private Marble refMarble;
 
     private List<Marble> _marbleList = new();
     private List<int> _indexCorrectMarble = new();
     private int score = 0;
+
     public int Score
     {
         get { return score; }
@@ -45,8 +47,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        refMarble = GenerateMarble(new Vector2(0, 0), m_GoalFrame.transform);
+        SetRefMarble();
         GenerateAllMarble();
+    }
+
+    private void SetRefMarble()
+    {
+        refMarble = GenerateMarble(new Vector2(0, 0), m_GoalFrame.transform);
     }
 
     private Marble GenerateMarble(Vector2 pos, Transform parent)
@@ -81,6 +88,11 @@ public class GameManager : MonoBehaviour
                 _marbleList.Add(m);
             }
         }
+
+        if (_indexCorrectMarble.Count < 1)
+            GenerateAllMarble();
+
+        Timer.Instance.StartTimer();
     }
 
     public void ResetBoard()
@@ -91,6 +103,12 @@ public class GameManager : MonoBehaviour
         }
         _marbleList = new();
         _indexCorrectMarble = new();
+        Timer.Instance.StopTimer();
+        Timer.Instance.ResetTimer();
+
+        // Change to reset SetRefMarble()
+        if (UnityEngine.Random.value >= m_ChanceResetRefMarble)
+            SetRefMarble();
     }
 
     public void HandleMarbleClick(Marble clickedMarble)
@@ -116,5 +134,10 @@ public class GameManager : MonoBehaviour
             clickedMarble.Wrong();
             if (Score > 0) Score--;
         }
+    }
+
+    public void GameOver()
+    {
+        print("GameOver");
     }
 }
