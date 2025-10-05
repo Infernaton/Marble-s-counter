@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using Utils;
 
 public class Timer : MonoBehaviour
 {
@@ -12,8 +13,14 @@ public class Timer : MonoBehaviour
 
     [SerializeField] private UnityEvent m_InvokeTimerOut;
 
+    [Header("Animation")]
+    [SerializeField] private Color m_EndTimerColor;
+    [SerializeField] private AnimationCurve m_AnimationDisplayColor;
+    private float cdAnimation;
+
     private float _currentTime;
     private bool _isPlaying;
+
 
     public float CurrentTime
     {
@@ -26,8 +33,16 @@ public class Timer : MonoBehaviour
             var t0 = (int)_currentTime;
 
             // get the 2 most significant values of the milliseconds.
-            var ms = (int)((_currentTime - t0) * 100);
+            var ms = (int)((_currentTime - t0) * 1000);
             m_TextTimer.text = string.Format("{0:00}:{1:000}", t0, ms);
+
+            if (_currentTime <= 4 && cdAnimation <= 0)
+            {
+                StartCoroutine(Anim.ChangeColor(0.75f, m_TextTimer, m_EndTimerColor, m_AnimationDisplayColor));
+                StartCoroutine(Anim.Giggle(0.2f, m_TextTimer.transform, 1f, 2f));
+                cdAnimation = 1f;
+                //Make sound
+            }
         }
     }
 
@@ -51,7 +66,8 @@ public class Timer : MonoBehaviour
     {
         if (!_isPlaying) return;
 
-        CurrentTime -= Time.deltaTime;
+        CurrentTime -= Time.fixedDeltaTime;
+        cdAnimation -= Time.fixedDeltaTime;
 
         if (CurrentTime <= 0)
         {

@@ -1,8 +1,16 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Utils;
+
+public enum GameState
+{
+    Menu,
+    Play,
+    EndGame
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -35,6 +43,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private GameState _currentState;
+
+    public GameState State { get => _currentState; set => _currentState = value; }
+
     public static GameManager Instance = null;
 
     private void Awake()
@@ -47,13 +59,16 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        SetRefMarble();
-        GenerateAllMarble();
+        State = GameState.Menu;
     }
 
-    private void SetRefMarble()
+    private IEnumerator SetRefMarble()
     {
+        if (refMarble != null)
+            yield return refMarble.PickUp(true);
         refMarble = GenerateMarble(new Vector2(0, 0), m_GoalFrame.transform);
+        refMarble.transform.localScale = Vector3.one * 0f;
+        yield return Anim.PopIn(0.2f, refMarble.GetComponent<CanvasGroup>());
     }
 
     private Marble GenerateMarble(Vector2 pos, Transform parent)
@@ -67,7 +82,7 @@ public class GameManager : MonoBehaviour
         return marble;
     }
 
-    public void GenerateAllMarble()
+    public IEnumerator GenerateAllMarble()
     {
         int pxSize = 70;
         for(int l = 0; l < m_Board.Lenght; l++)
@@ -83,19 +98,20 @@ public class GameManager : MonoBehaviour
                 {
                     // Add the next index to be added to the list
                     _indexCorrectMarble.Add(_marbleList.Count);
-
                 }
                 _marbleList.Add(m);
             }
         }
 
         if (_indexCorrectMarble.Count < 1)
-            GenerateAllMarble();
+            yield return GenerateAllMarble();
+
+        yield return m_Board.SlideInAnimation();
 
         Timer.Instance.StartTimer();
     }
 
-    public void ResetBoard()
+    public IEnumerator ResetBoard()
     {
         for(int i = 0; i < m_Board.transform.childCount; i++ )
         {
@@ -105,10 +121,11 @@ public class GameManager : MonoBehaviour
         _indexCorrectMarble = new();
         Timer.Instance.StopTimer();
         Timer.Instance.ResetTimer();
+        yield return m_Board.SlideOutAnimation();
 
         // Change to reset SetRefMarble()
         if (UnityEngine.Random.value >= m_ChanceResetRefMarble)
-            SetRefMarble();
+            yield return SetRefMarble();
     }
 
     public void HandleMarbleClick(Marble clickedMarble)
@@ -117,27 +134,40 @@ public class GameManager : MonoBehaviour
 
         if (_indexCorrectMarble.Contains(index))
         {
-            print("++Correct");
-            clickedMarble.PickUp();
+            StartCoroutine(clickedMarble.PickUp(false));
             _indexCorrectMarble.Remove(index);
             Score++;
             if (_indexCorrectMarble.Count == 0)
             {
-                print("none to find");
-                ResetBoard();
-                GenerateAllMarble();
+                StartCoroutine(GameLoop());
             }
         }
         else
         {
-            print("--Incorrect");
             clickedMarble.Wrong();
             if (Score > 0) Score--;
         }
     }
 
+    public IEnumerator InitGameLoop()
+    {
+        State = GameState.Play;
+        yield return MenuManager.Instance.ResetDisplayMenu();
+        yield return SetRefMarble();
+        yield return GenerateAllMarble();
+    }
+
+    private IEnumerator GameLoop()
+    {
+        //Time to make the animation of the last marble to disapear
+        yield return new WaitForSeconds(0.1f);
+        yield return ResetBoard();
+        yield return GenerateAllMarble();
+    }
+
     public void GameOver()
     {
-        print("GameOver");
+        State = GameState.EndGame;
+        MenuManager.Instance.SetGameoverMenu();
     }
 }
