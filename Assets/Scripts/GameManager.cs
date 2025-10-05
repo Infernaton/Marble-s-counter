@@ -104,7 +104,10 @@ public class GameManager : MonoBehaviour
         }
 
         if (_indexCorrectMarble.Count < 1)
+        {
+            yield return ResetBoard();
             yield return GenerateAllMarble();
+        }
 
         m_Board.PlayShuffleBoard();
 
