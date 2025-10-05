@@ -106,6 +106,8 @@ public class GameManager : MonoBehaviour
         if (_indexCorrectMarble.Count < 1)
             yield return GenerateAllMarble();
 
+        m_Board.PlayShuffleBoard();
+
         yield return m_Board.SlideInAnimation();
 
         Timer.Instance.StartTimer();
@@ -113,15 +115,16 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator ResetBoard()
     {
-        for(int i = 0; i < m_Board.transform.childCount; i++ )
-        {
-            Destroy(m_Board.transform.GetChild(i).gameObject);
-        }
         _marbleList = new();
         _indexCorrectMarble = new();
         Timer.Instance.StopTimer();
         Timer.Instance.ResetTimer();
         yield return m_Board.SlideOutAnimation();
+
+        for (int i = 0; i < m_Board.transform.childCount; i++)
+        {
+            Destroy(m_Board.transform.GetChild(i).gameObject);
+        }
 
         // Change to reset SetRefMarble()
         if (UnityEngine.Random.value >= m_ChanceResetRefMarble)

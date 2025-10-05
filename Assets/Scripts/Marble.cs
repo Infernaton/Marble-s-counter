@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utils;
+using static Unity.VisualScripting.Member;
 
 public class Marble : MonoBehaviour, IPointerClickHandler
 {
@@ -11,6 +12,15 @@ public class Marble : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Image[] m_Trims;
 
     [SerializeField] private float m_GiggleAnimationTime = 0.1f;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource m_Source;
+
+    [SerializeField] private AudioClip m_WrongChoice;
+    [SerializeField] private AudioClip m_PickupMarble;
+    [SerializeField] private AudioClip m_TouchMarble;
+
+    [SerializeField] private AudioClip m_ResetTarget;
 
     private float _currentCDAnimation;
 
@@ -56,15 +66,21 @@ public class Marble : MonoBehaviour, IPointerClickHandler
 
     public IEnumerator PickUp(bool isRefMarble)
     {
-        //Make sound
+        AudioClip clip;
+        if (isRefMarble)
+            clip = m_ResetTarget;
+        else
+            clip = m_TouchMarble;
+            
+        SoundModifier.PlayOneShotAdjustPitch(m_Source, clip);
+        yield return new WaitForSeconds(clip.length);
         yield return Anim.PopOut(0.1f, GetComponent<CanvasGroup>());
-        //if (isRefMarble) // Make reset sound
-        //else // make pickup sound
+
         Destroy(gameObject);
     }
 
     public void Wrong()
     {
-        //Make sound
+        SoundModifier.PlayOneShotAdjustPitch(m_Source, m_WrongChoice);
     }
 }

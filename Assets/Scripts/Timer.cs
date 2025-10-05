@@ -16,6 +16,7 @@ public class Timer : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private Color m_EndTimerColor;
     [SerializeField] private AnimationCurve m_AnimationDisplayColor;
+    [SerializeField] private AudioSource m_TimerWarningSound;
     private float cdAnimation;
 
     private float _currentTime;
@@ -38,6 +39,7 @@ public class Timer : MonoBehaviour
 
             if (_currentTime <= 4 && cdAnimation <= 0)
             {
+                m_TimerWarningSound.Play();
                 StartCoroutine(Anim.ChangeColor(0.75f, m_TextTimer, m_EndTimerColor, m_AnimationDisplayColor));
                 StartCoroutine(Anim.Giggle(0.2f, m_TextTimer.transform, 1f, 2f));
                 cdAnimation = 1f;

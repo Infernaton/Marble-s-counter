@@ -251,4 +251,22 @@ namespace Utils
             yield return AnimationOnCurve(t, t => text.color = Color.Lerp(current, goalColor, t), animation);
         }
     }
+
+    public class SoundModifier
+    {
+        public static void PlayAdjustPitch(AudioSource audio)
+        {
+            if (audio.isPlaying) return;
+            float modifier = Mathf.Lerp(-0.1f, 0.1f, UnityEngine.Random.value);
+            audio.pitch += modifier;
+            audio.Play();
+        }
+        public static void PlayOneShotAdjustPitch(AudioSource audio, AudioClip clip)
+        {
+            if (audio.isPlaying) return;
+            float modifier = Mathf.Lerp(-0.1f, 0.1f, UnityEngine.Random.value);
+            audio.pitch += modifier;
+            audio.PlayOneShot(clip);
+        }
+    }
 }

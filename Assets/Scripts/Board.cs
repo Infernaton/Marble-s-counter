@@ -9,9 +9,13 @@ public class Board : MonoBehaviour
     [SerializeField] private Vector2 m_BoardFinalPosition;
     [SerializeField] private AnimationCurve m_Slide;
 
+    [SerializeField] private AudioSource m_ShuffleBoard;
+
     private Vector2 _boardInitPos;
     public int Lenght { get => m_Lenght; }
     public int Width { get => m_Width; }
+
+    public void PlayShuffleBoard() => SoundModifier.PlayAdjustPitch(m_ShuffleBoard);
 
     private void Awake()
     {
